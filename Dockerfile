@@ -1,6 +1,6 @@
 FROM alpine:3.6
 LABEL Maintainer="Ibragim Abubakarov <ibragim.ai95@gmail.com>" \
-      Description="Léger conteneur avec Nginx et PHP-FPM 7.2 basé sur Alpine Linux."
+      Description="Léger conteneur avec Nginx et PHP-FPM 7.1 basé sur Alpine Linux."
 
 # Install packages
 RUN apk --no-cache add \
