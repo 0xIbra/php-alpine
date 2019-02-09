@@ -21,7 +21,8 @@ RUN apk --no-cache add \
     php7-xml \
     php7-xmlreader \
     php7-zlib \
-    supervisor
+    supervisor \
+    composer
 
 # Create webroot directories
 RUN mkdir -p /var/www/html
@@ -34,6 +35,8 @@ COPY config/php.ini /etc/php7/conf.d/docker_custom.conf
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY app/ /var/www/html/
+
+CMD ["composer", "install"]
 
 EXPOSE 80
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
