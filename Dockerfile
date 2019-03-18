@@ -1,6 +1,6 @@
-FROM alpine:3.6
+FROM alpine:3.9
 LABEL Maintainer="Ibragim Abubakarov <ibragim.ai95@gmail.com>" \
-      Description="Léger conteneur avec Nginx et PHP-FPM 7.1 basé sur Alpine Linux."
+      Description="Léger conteneur avec Nginx et PHP-FPM 7.2 basé sur Alpine Linux."
 
 # Install packages
 RUN apk --no-cache add \
@@ -11,9 +11,17 @@ RUN apk --no-cache add \
     php7-curl \
     php7-dom \
     php7-fpm \
+    php7-cgi \
     php7-common \
+    php7-apc \
+    php7-calendar \
+    php7-date \
+    php7-pcntl \
+    php7-libxml \
+    php7-pecl-mongodb \
     php7-gd \
     php7-json \
+    php7-mcrypt \
     php7-exif \
     php7-fileinfo \
     php7-opcache \
@@ -37,16 +45,19 @@ RUN apk --no-cache add \
     supervisor
 
 # Create webroot directories
-RUN mkdir -p /var/www/html
-WORKDIR /var/www/html
+RUN mkdir -p -m 777 /opt/src
+WORKDIR /opt/src
 
-COPY config/nginx.conf /etc/nginx/nginx.conf
-COPY config/fpm-pool.conf /etc/php7/php-fpm.d/docker_custom.conf
-COPY config/php.ini /etc/php7/conf.d/docker_custom.conf
+COPY .docker/config/app.conf /etc/nginx/sites-enabled/
+COPY .docker/config/fastcgi_params /etc/nginx/sites-enabled/
+COPY .docker/config/fpm-pool.conf /etc/php7/php-fpm.d/docker_custom.conf
+COPY .docker/config/php.ini /etc/php7/conf.d/docker_custom.conf
 
-COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY .docker/config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-COPY app/ /var/www/html/
+COPY . .
+
+RUN chmod -R 0777 /opt/src/app/cache/ && chmod -R 0777 /opt/src/app/logs/
 
 EXPOSE 80
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
