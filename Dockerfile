@@ -52,7 +52,6 @@ COPY app/ /var/www/html/
 
 
 CMD bash -c "composer install"
-CMD ["php", "bin/console", "cache:clear"]
 
 EXPOSE 80
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
